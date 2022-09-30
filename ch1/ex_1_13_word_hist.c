@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #define HOZ 'h'
 #define VER 'v'
 #define IN 1
