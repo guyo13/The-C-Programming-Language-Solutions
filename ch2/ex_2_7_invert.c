@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <limits.h>
-#include <math.h>
-#define INT_BITS (int)round(log2((double)UINT_MAX))
+#define INT_BITS (int)sizeof(int) * 8
 #define ALLONES ~0u
 
 int setbits(int x, unsigned int position, unsigned int count, int y)
@@ -22,7 +20,6 @@ int setbits(int x, unsigned int position, unsigned int count, int y)
     int x_low = x & ~(ALLONES << (position - 1));
     // The expression ~(~0u >> X) creates a mask where the leftmost X bits are 1 and the rest are 0's
     int x_high = x & ~(ALLONES >> (INT_BITS - position - n + 1)); // We subtract the first element twice so add 1
-    printf("y_nbits %X x_high %X x_low %X\n", y_nbits, x_high, x_low);
     return x_low | y_nbits | x_high;
 }
 
