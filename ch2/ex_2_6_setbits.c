@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define INT_BITS (int)sizeof(int) * 8
+#define INT_BITS ((int)sizeof(int) * 8)
 #define ALLONES ~0u
 
 int setbits(int x, unsigned int position, unsigned int count, int y)
