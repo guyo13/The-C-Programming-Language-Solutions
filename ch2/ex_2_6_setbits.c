@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <math.h>
 #define INT_BITS (int)round(log2((double)UINT_MAX))
+#define ALLONES ~0u
 
 int setbits(int x, unsigned int position, unsigned int count, int y)
 {
@@ -16,10 +17,13 @@ int setbits(int x, unsigned int position, unsigned int count, int y)
     int max_count = INT_BITS - position + 1;
     int n = count > max_count ? max_count : count;
 
-    // The expression ~(~0 << X) creates a mask of 1's where the rightmost X bits are 1 and the rest are 0's
-    int y_nbits = (y & ~(~0 << n)) << position;
-    int x_mask = x & ~(~0 << position);
-    return x_mask | y_nbits;
+    // The expression ~(~0u << X) creates a mask where the rightmost X bits are 1 and the rest are 0's
+    int y_nbits = (y & ~(ALLONES << n)) << (position - 1);
+    int x_low = x & ~(ALLONES << (position - 1));
+    // The expression ~(~0u >> X) creates a mask where the leftmost X bits are 1 and the rest are 0's
+    int x_high = x & ~(ALLONES >> (INT_BITS - position - n + 1)); // We subtract the first element twice so add 1
+    printf("y_nbits %X x_high %X x_low %X\n", y_nbits, x_high, x_low);
+    return x_low | y_nbits | x_high;
 }
 
 int main(int argc, char **argv)
@@ -35,8 +39,8 @@ int main(int argc, char **argv)
     int position = atoi(argv[3]);
     int count = atoi(argv[4]);
 
-    printf("setbits(%d, %d, %d, %d)\n", x, position, count, y);
+    printf("setbits(%X, %d, %d, %X)\n", x, position, count, y);
 
     int result = setbits(x, position, count, y);
-    printf("Result: %d\n", result);
+    printf("Result: %X\n", result);
 }
